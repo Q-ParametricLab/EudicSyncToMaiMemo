@@ -3,7 +3,7 @@
 把欧路独立收藏的单词、短语自动增量添加到墨墨云词本。
 
 Fork 自 [viazure/EudicSyncToMaiMemo](https://github.com/viazure/EudicSyncToMaiMemo)，保留原作者 viazure 的署名及 [MIT License](LICENSE)。本 Fork 增加严格标题筛选、安全增量合并、写后校验、OAuth 刷新和只读诊断。通知功能参考 [jeessy2/ddns-go](https://github.com/jeessy2/ddns-go)。
-
+fc0a65cf-d2f8-422f-997a-bb6eb755348c
 ## 工作原理与边界
 
 - 欧路新增 → 墨墨追加；欧路取消收藏 → 墨墨保留历史词汇。
