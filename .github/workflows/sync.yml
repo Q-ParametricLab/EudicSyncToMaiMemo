@@ -29,22 +29,24 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4 # 修正：当前稳定版本为 v4
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v4 # 修正：当前稳定版本为 v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.x' # 注意：请确保 .NET 10 已正式发布，否则建议改为 '8.0.x' 或 '9.0.x'
           dotnet-quality: 'ga'
 
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          
       - name: Install pinned OAuth dependencies
         working-directory: scripts/maimemo-oauth
         run: npm ci --ignore-scripts --no-audit --no-fund
+        
       - name: Run Sync
         shell: bash
         run: |
@@ -66,7 +68,9 @@ jobs:
           MaiMemo__Provider: OpenApi
           MaiMemo__Token: ${{ inputs.authentication == 'fixed' && secrets.MAIMEMO_TOKEN || '' }}
           MaiMemo__DefaultNotepadId: ${{ vars.MAIMEMO_NOTEPAD_ID }}
-          Notification__Enabled: ${{ secrets.NOTIFICATION_ENABLED }}
-          Notification__Url: ${{ secrets.NOTIFICATION_URL }}
-          Notification__RequestBody: ${{ secrets.NOTIFICATION_REQUEST_BODY }}
-          Notification__Headers: ${{ secrets.NOTIFICATION_HEADERS }}
+          
+          # ✅ 核心修复：增加空值兜底逻辑。如果 Secret 为空，则强制传入 'false'，防止 .NET 解析空字符串报错
+          Notification__Enabled: ${{ secrets.NOTIFICATION_ENABLED != '' && secrets.NOTIFICATION_ENABLED || 'false' }}
+          Notification__Url: ${{ secrets.NOTIFICATION_URL || '' }}
+          Notification__RequestBody: ${{ secrets.NOTIFICATION_REQUEST_BODY || '' }}
+          Notification__Headers: ${{ secrets.NOTIFICATION_HEADERS || '' }}
